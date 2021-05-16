@@ -1,25 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
+import { CssBaseline } from '@material-ui/core'
+import Routes from './routes/routes'
+
+// https://dribbble.com/shots/6545819-Pokedex-App
+// https://dribbble.com/shots/6563578-Pokedex-App-Animation/attachments/6563578-Pokedex-App-Animation?mode=media
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: 16, height: '100vh' }}>
+      <CssBaseline />
+      <Routes />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
