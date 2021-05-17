@@ -1,9 +1,17 @@
-import { Grid, makeStyles, Paper, CircularProgress } from '@material-ui/core'
+import {
+  Grid,
+  makeStyles,
+  Paper,
+  CircularProgress,
+  useMediaQuery,
+} from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import api from '../../services/api'
 import Skeleton from '@material-ui/lab/Skeleton'
 import Sheet from 'react-modal-sheet'
 import PokemonInfo from '../PokemonInfo'
+import capitalizeFirstLetter from '../../utils/capitalizeFirstLetter'
+import { useTheme } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     // justifyContent: 'center',
   },
   paper: {
-    padding: '16px 4px',
+    padding: (props) => (props.isMobile ? '16px 4px' : '10px 16px'),
     display: 'flex',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
@@ -21,6 +29,11 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     maxHeight: 100,
     cursor: 'pointer',
+    transition: '0.3s',
+
+    '&:hover': {
+      opacity: '0.8',
+    },
   },
   loading: {
     height: '80vh',
@@ -68,11 +81,13 @@ const types = [
 ]
 
 function Pokedex() {
-  let classes = useStyles()
   const [pokemons, setPokemons] = useState([])
   const [loading, setLoading] = useState(false)
   const [isOpen, setOpen] = useState(false)
   const [pokemonInfo, setPokemonInfo] = useState(null)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  let classes = useStyles({ isMobile })
 
   useEffect(() => {
     fetchPokedex()
@@ -101,16 +116,12 @@ function Pokedex() {
     setLoading(false)
   }
 
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1)
-  }
-
   return (
     <div className={classes.root}>
       <h1>Pokedex</h1>
       {!loading ? (
         <>
-          <Grid container spacing={1}>
+          <Grid container spacing={isMobile ? 1 : 2}>
             {pokemons.map((poke, i) => (
               <Grid key={i} item xs={6}>
                 <Paper
@@ -127,14 +138,14 @@ function Pokedex() {
                     <div
                       style={{
                         fontWeight: 'bold',
-                        fontSize: 16,
+                        fontSize: isMobile ? 16 : 24,
                         marginBottom: 3,
                       }}
                     >
                       {capitalizeFirstLetter(poke.name)}
                     </div>
-                    {poke.types.map((type) => (
-                      <div className={classes.type}>
+                    {poke.types.map((type, i) => (
+                      <div key={i} className={classes.type}>
                         {capitalizeFirstLetter(type.type.name)}
                       </div>
                     ))}
@@ -149,7 +160,6 @@ function Pokedex() {
               </Grid>
             ))}
           </Grid>
-          {console.log(pokemonInfo)}
           {pokemonInfo !== null && (
             <PokemonInfo
               data={pokemonInfo}

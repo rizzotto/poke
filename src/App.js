@@ -6,9 +6,17 @@ import Routes from './routes/routes'
 
 function App() {
   return (
-    <div style={{ padding: 16, height: '100vh' }}>
-      <CssBaseline />
-      <Routes />
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <div style={{ padding: 16, height: '100vh', maxWidth: 900 }}>
+        <CssBaseline />
+        <Routes />
+      </div>
     </div>
   )
 }
