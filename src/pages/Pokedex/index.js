@@ -14,6 +14,7 @@ import PokemonInfo from '../PokemonInfo'
 import capitalizeFirstLetter from '../../utils/capitalizeFirstLetter'
 import { useTheme } from '@material-ui/core/styles'
 import Grow from '@material-ui/core/Grow'
+import SearchBar from 'material-ui-search-bar'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     // display: 'flex',
     // alignItems: 'center',
     // justifyContent: 'center',
+    // width: '100%',
   },
   paper: {
     padding: (props) => (props.isMobile ? '16px 4px' : '10px 16px'),
@@ -86,6 +88,7 @@ function Pokedex() {
   const [loading, setLoading] = useState(false)
   const [pokemons, setPokemons] = useState([])
   const [isOpen, setOpen] = useState(false)
+  const [searchValue, setSearchValue] = useState('')
   const [pokemonInfo, setPokemonInfo] = useState(null)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -123,45 +126,59 @@ function Pokedex() {
       <h1>Pokedex</h1>
       {!loading ? (
         <>
+          <SearchBar
+            value={searchValue}
+            onChange={(newValue) => setSearchValue(newValue)}
+            cancelOnEscape
+            onCancelSearch={() => setSearchValue('')}
+            // onRequestSearch={() => doSomethingWith(this.state.value)}
+            style={{
+              margin: '16px 0 16px 0',
+              borderRadius: 12,
+              boxShadow: '0 4px 6px 0 rgba(31,70,88,.04)',
+            }}
+          />
           <Grow in>
             <Grid container spacing={isMobile ? 1 : 2}>
-              {pokemons.map((poke, i) => (
-                <Grid key={i} item xs={6}>
-                  <Paper
-                    onClick={() => {
-                      setPokemonInfo(poke)
-                      setOpen(true)
-                    }}
-                    style={{
-                      backgroundColor: poke.color[0].color,
-                    }}
-                    className={classes.paper}
-                  >
-                    <div className={classes.title}>
-                      <div
-                        style={{
-                          fontWeight: 'bold',
-                          fontSize: isMobile ? 16 : 24,
-                          marginBottom: 3,
-                        }}
-                      >
-                        {capitalizeFirstLetter(poke.name)}
-                      </div>
-                      {poke.types.map((type, i) => (
-                        <div key={i} className={classes.type}>
-                          {capitalizeFirstLetter(type.type.name)}
+              {pokemons
+                .filter((poke) => poke.name.includes(searchValue.toLowerCase()))
+                .map((poke, i) => (
+                  <Grid key={i} item xs={pokemons.lenght === 1 ? 12 : 6}>
+                    <Paper
+                      onClick={() => {
+                        setPokemonInfo(poke)
+                        setOpen(true)
+                      }}
+                      style={{
+                        backgroundColor: poke.color[0].color,
+                      }}
+                      className={classes.paper}
+                    >
+                      <div className={classes.title}>
+                        <div
+                          style={{
+                            fontWeight: 'bold',
+                            fontSize: isMobile ? 16 : 24,
+                            marginBottom: 3,
+                          }}
+                        >
+                          {capitalizeFirstLetter(poke.name)}
                         </div>
-                      ))}
-                    </div>
-                    <img
-                      src={poke.sprites.other.dream_world.front_default}
-                      alt={poke.name}
-                      height={70}
-                      width={70}
-                    />
-                  </Paper>
-                </Grid>
-              ))}
+                        {poke.types.map((type, i) => (
+                          <div key={i} className={classes.type}>
+                            {capitalizeFirstLetter(type.type.name)}
+                          </div>
+                        ))}
+                      </div>
+                      <img
+                        src={poke.sprites.other.dream_world.front_default}
+                        alt={poke.name}
+                        height={70}
+                        width={70}
+                      />
+                    </Paper>
+                  </Grid>
+                ))}
             </Grid>
           </Grow>
           {/* talvez um useEffect toda vez q mudar o pokemonInfo fazer o fetch da api */}

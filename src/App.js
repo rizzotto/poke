@@ -13,7 +13,9 @@ function App() {
         justifyContent: 'center',
       }}
     >
-      <div style={{ padding: 16, height: '100vh', maxWidth: 700 }}>
+      <div
+        style={{ padding: 16, height: '100vh', maxWidth: 700, width: '100%' }}
+      >
         <CssBaseline />
         <Routes />
       </div>

@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     padding: 20,
-    boxShadow: '2px 2px 6px 2px rgba(31,70,88,.3)',
+    boxShadow: '2px 2px 6px 2px rgba(31,70,88,.1)',
     borderRadius: 16,
     marginTop: 16,
     width: '100%',
