@@ -1,7 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Sheet from 'react-modal-sheet'
-import { AppBar, makeStyles, Tab, Tabs } from '@material-ui/core'
+import {
+  AppBar,
+  CircularProgress,
+  makeStyles,
+  Tab,
+  Tabs,
+} from '@material-ui/core'
 import capitalizeFirstLetter from '../../utils/capitalizeFirstLetter'
+import About from './About'
+import api from '../../services/api'
+import Stats from './Stats'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -45,11 +54,32 @@ const useStyles = makeStyles((theme) => ({
   indicator: {
     backgroundColor: (props) => props.data.color[0].color,
   },
+  loading: {
+    height: '40vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 }))
 
 function PokemonInfo({ isOpen, onClose, data }) {
   let classes = useStyles({ data })
+  const url = data.species.url
   const [value, setValue] = useState(0)
+  const [specieDetails, setSpecieDetails] = useState()
+  const [loading, setLoading] = useState(false)
+
+  console.log(data)
+  useEffect(() => {
+    fetchData()
+  }, [data])
+
+  async function fetchData() {
+    setLoading(true)
+    const data = await api.get(url)
+    setSpecieDetails(data.data)
+    setLoading(false)
+  }
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
@@ -100,40 +130,35 @@ function PokemonInfo({ isOpen, onClose, data }) {
                 indicator: classes.indicator,
               }}
             >
-              <Tab label="Item One" />
-              <Tab label="Item Two" />
-              <Tab label="Item Three" />
+              <Tab label="About" />
+              <Tab label="Stats" />
+              <Tab label="Evolution" />
+              <Tab label="Abilities" />
             </Tabs>
-            {value === 0 && (
-              <div>
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/5.png" />
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
-                <div>a</div>
+            {!loading ? (
+              <>
+                {/* {data.name === specieDetails.name && ( */}
+                <>
+                  {console.log(specieDetails)}
+                  {value === 0 && (
+                    <About data={data} specieDetails={specieDetails} />
+                  )}
+                  {value === 1 && (
+                    <Stats data={data} specieDetails={specieDetails} />
+                  )}
+                  {value === 2 && 'cc'}
+                  {value === 3 && 'dd'}
+                </>
+                {/* )} */}
+              </>
+            ) : (
+              <div className={classes.loading}>
+                <CircularProgress style={{ color: data.color[0].color }} />
               </div>
             )}
-            {value === 1 && 'bb'}
-            {value === 2 && 'cc'}
           </div>
         </Sheet.Content>
-        {console.log(data)}
+        {/* {console.log(specieDetails)} */}
       </Sheet.Container>
 
       <Sheet.Backdrop />
