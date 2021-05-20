@@ -41,27 +41,27 @@ function Stats({ data }) {
   return (
     <div className={classes.container}>
       <div className={classes.stats}>
-        <div className={classes.title}>HP</div>
+        <div className={classes.title}>HP - {hp}</div>
         <ProgressBar percent={hp} />
       </div>
       <div className={classes.stats}>
-        <div className={classes.title}>Attack</div>
+        <div className={classes.title}>Attack - {attack}</div>
         <ProgressBar percent={attack} />
       </div>
       <div className={classes.stats}>
-        <div className={classes.title}>Defense</div>
+        <div className={classes.title}>Defense - {defense}</div>
         <ProgressBar percent={defense} />
       </div>
       <div className={classes.stats}>
-        <div className={classes.title}>Special Attack</div>
+        <div className={classes.title}>Special Attack - {spAtk}</div>
         <ProgressBar percent={spAtk} />
       </div>
       <div className={classes.stats}>
-        <div className={classes.title}>Special Defense</div>
+        <div className={classes.title}>Special Defense - {spDef}</div>
         <ProgressBar percent={spDef} />
       </div>
       <div className={classes.stats}>
-        <div className={classes.title}>Speed</div>
+        <div className={classes.title}>Speed - {speed}</div>
         <ProgressBar percent={speed} />
       </div>
     </div>

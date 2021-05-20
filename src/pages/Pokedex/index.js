@@ -5,6 +5,8 @@ import {
   CircularProgress,
   useMediaQuery,
   Zoom,
+  Select,
+  MenuItem,
 } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import api from '../../services/api'
@@ -61,6 +63,30 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 6,
     backgroundColor: 'rgb(255, 255, 255, 0.3)',
   },
+  select: {
+    width: '100%',
+    padding: '8px 16px',
+    '& .MuiSelect-icon': {
+      marginRight: 12,
+    },
+    '& .MuiSelect-select:focus': {
+      backgroundColor: 'white',
+    },
+    '& .MuiMenu-paper': {
+      borderRadius: 12,
+    },
+  },
+  selectPaper: {
+    height: theme.spacing(6),
+    display: 'flex',
+    justifyContent: 'space-between',
+    margin: '16px 0 16px 0',
+    borderRadius: 12,
+    boxShadow: '0 4px 6px 0 rgba(31,70,88,.04)',
+  },
+  dropdownStyle: {
+    borderRadius: 12,
+  },
 }))
 
 const types = [
@@ -86,9 +112,28 @@ const types = [
 
 function Pokedex() {
   const [loading, setLoading] = useState(false)
-  const [pokemons, setPokemons] = useState([])
+  // Colocar em um Provider no futuro, para persistir entre telas
+  const [pokemons, setPokemons] = useState({
+    // 1 gen
+    152: [],
+    // 2 gen
+    252: [],
+    // 3 gen
+    387: [],
+    // 4 gen
+    494: [],
+    // 5 gen
+    650: [],
+    // 6 gen
+    722: [],
+    // 7 gen
+    810: [],
+    // 8 gen
+    899: [],
+  })
   const [isOpen, setOpen] = useState(false)
   const [searchValue, setSearchValue] = useState('')
+  const [generation, setGeneration] = useState({ value: 152 })
   const [pokemonInfo, setPokemonInfo] = useState(null)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -96,51 +141,90 @@ function Pokedex() {
 
   useEffect(() => {
     fetchPokedex()
-  }, [])
+  }, [generation])
 
   async function fetchPokedex() {
-    setLoading(true)
+    if (pokemons[generation.value].length === 0) {
+      setLoading(true)
+      const newPokemonData = []
+      for (let i = genStart[generation.value]; i < generation.value; i++) {
+        const data = await api.get(`https://pokeapi.co/api/v2/pokemon/${i}/`)
 
-    const newPokemonData = []
-    for (let i = 1; i < 152; i++) {
-      const data = await api.get(`https://pokeapi.co/api/v2/pokemon/${i}/`)
+        var result = types.filter((obj) => {
+          return obj.type === data.data.types[0].type.name
+        })
 
-      var result = types.filter((obj) => {
-        return obj.type === data.data.types[0].type.name
-      })
+        const item = {
+          ...data.data,
+          color: result,
+        }
 
-      const item = {
-        ...data.data,
-        color: result,
+        newPokemonData.push(item)
       }
-
-      newPokemonData.push(item)
+      setPokemons({ ...pokemons, [generation.value]: newPokemonData })
+      setLoading(false)
     }
+  }
 
-    setPokemons(newPokemonData)
-    setLoading(false)
+  const genStart = {
+    // 1 gen
+    152: 1,
+    // 2 gen
+    252: 153,
+    // 3 gen
+    387: 253,
+    // 4 gen
+    494: 388,
+    // 5 gen
+    650: 495,
+    // 6 gen
+    722: 651,
+    // 7 gen
+    810: 723,
+    // 8 gen
+    899: 811,
   }
 
   return (
     <div className={classes.root}>
       <h1>Pokedex</h1>
+      <SearchBar
+        value={searchValue}
+        onChange={(newValue) => setSearchValue(newValue)}
+        cancelOnEscape
+        onCancelSearch={() => setSearchValue('')}
+        style={{
+          margin: '16px 0 16px 0',
+          borderRadius: 12,
+          boxShadow: '0 4px 6px 0 rgba(31,70,88,.04)',
+        }}
+      />
+      <Paper className={classes.selectPaper}>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          fullWidth
+          disableUnderline
+          className={classes.select}
+          MenuProps={{ classes: { paper: classes.dropdownStyle } }}
+          value={generation.value}
+          onChange={(value) => setGeneration({ value: value.target.value })}
+        >
+          <MenuItem value={152}>Generation 1</MenuItem>
+          <MenuItem value={252}>Generation 2</MenuItem>
+          <MenuItem value={387}>Generation 3</MenuItem>
+          <MenuItem value={494}>Generation 4</MenuItem>
+          <MenuItem value={650}>Generation 5</MenuItem>
+          <MenuItem value={722}>Generation 6</MenuItem>
+          <MenuItem value={810}>Generation 7</MenuItem>
+          <MenuItem value={899}>Generation 8</MenuItem>
+        </Select>
+      </Paper>
       {!loading ? (
         <>
-          <SearchBar
-            value={searchValue}
-            onChange={(newValue) => setSearchValue(newValue)}
-            cancelOnEscape
-            onCancelSearch={() => setSearchValue('')}
-            // onRequestSearch={() => doSomethingWith(this.state.value)}
-            style={{
-              margin: '16px 0 16px 0',
-              borderRadius: 12,
-              boxShadow: '0 4px 6px 0 rgba(31,70,88,.04)',
-            }}
-          />
           <Grow in>
             <Grid container spacing={isMobile ? 1 : 2}>
-              {pokemons
+              {pokemons[generation.value]
                 .filter((poke) => poke.name.includes(searchValue.toLowerCase()))
                 .map((poke, i) => (
                   <Grid key={i} item xs={pokemons.lenght === 1 ? 12 : 6}>
@@ -171,7 +255,11 @@ function Pokedex() {
                         ))}
                       </div>
                       <img
-                        src={poke.sprites.other.dream_world.front_default}
+                        src={
+                          poke.sprites.other.dream_world.front_default !== null
+                            ? poke.sprites.other.dream_world.front_default
+                            : poke.sprites.front_default
+                        }
                         alt={poke.name}
                         height={70}
                         width={70}
@@ -181,7 +269,6 @@ function Pokedex() {
                 ))}
             </Grid>
           </Grow>
-          {/* talvez um useEffect toda vez q mudar o pokemonInfo fazer o fetch da api */}
           {pokemonInfo !== null && (
             <PokemonInfo
               data={pokemonInfo}
@@ -192,7 +279,7 @@ function Pokedex() {
         </>
       ) : (
         <div className={classes.loading}>
-          <CircularProgress style={{ color: '#48d0b0' }} />
+          <CircularProgress style={{ color: '#f95587' }} />
         </div>
       )}
     </div>

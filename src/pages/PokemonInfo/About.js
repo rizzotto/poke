@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'flex-start',
     justifyContent: 'center',
     flexDirection: 'column',
-    padding: 20,
+    padding: '20px 20px 50px 20px',
   },
   weightContainer: {
     display: 'flex',
@@ -39,7 +39,7 @@ function PokemonInfo({ specieDetails, data }) {
 
   return (
     <div className={classes.container}>
-      <div>{specieDetails.flavor_text_entries[44].flavor_text}</div>
+      <div>{specieDetails.flavor_text_entries[14].flavor_text}</div>
       <div className={classes.weightContainer}>
         <div className={classes.weight}>
           <div className={classes.title}>Height</div>
@@ -50,8 +50,12 @@ function PokemonInfo({ specieDetails, data }) {
           <div>{data.weight / 10} kg</div>
         </div>
       </div>
-      <h3>Habitat</h3>
-      <div>{capitalizeFirstLetter(specieDetails.habitat.name)}</div>
+      {specieDetails.habitat && (
+        <>
+          <h3>Habitat</h3>
+          <div>{capitalizeFirstLetter(specieDetails.habitat.name)}</div>
+        </>
+      )}
       <h3>Egg Groups</h3>
       {specieDetails.egg_groups.map((group, i) => (
         <div key={i}>{capitalizeFirstLetter(group.name).replace('-', ' ')}</div>

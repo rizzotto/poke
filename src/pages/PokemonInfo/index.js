@@ -6,6 +6,8 @@ import {
   makeStyles,
   Tab,
   Tabs,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core'
 import capitalizeFirstLetter from '../../utils/capitalizeFirstLetter'
 import About from './About'
@@ -68,8 +70,10 @@ function PokemonInfo({ isOpen, onClose, data }) {
   const [value, setValue] = useState(0)
   const [specieDetails, setSpecieDetails] = useState()
   const [loading, setLoading] = useState(false)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'))
 
-  console.log(data)
+  // console.log(data)
   useEffect(() => {
     fetchData()
   }, [data])
@@ -97,7 +101,7 @@ function PokemonInfo({ isOpen, onClose, data }) {
         //   backgroundColor: data.color[0].color,
         // }}
         />
-        <Sheet.Content>
+        <Sheet.Content disableDrag={isMobile}>
           <div className={classes.container}>
             <div className={classes.titleContainer}>
               <div>
@@ -113,7 +117,11 @@ function PokemonInfo({ isOpen, onClose, data }) {
               <h2>#{data.id}</h2>
             </div>
             <img
-              src={data.sprites.other.dream_world.front_default}
+              src={
+                data.sprites.other.dream_world.front_default !== null
+                  ? data.sprites.other.dream_world.front_default
+                  : data.sprites.front_default
+              }
               alt={data.name}
               height={250}
               width={250}
