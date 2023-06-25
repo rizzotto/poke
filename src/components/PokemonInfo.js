@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: (props) => props.data.color[0].color,
   },
   loading: {
-    height: "40vh",
+    height: "50vh",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
