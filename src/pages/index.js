@@ -6,11 +6,12 @@ import {
   makeStyles,
   useMediaQuery,
   useTheme,
+  TextField,
 } from "@material-ui/core";
 import axios from "axios";
 import React from "react";
 import capitalizeFirstLetter from "../utils/capitalizeFirstLetter";
-import SearchBar from "material-ui-search-bar";
+// import SearchBar from "material-ui-search-bar";
 import PokemonInfo from "../components/PokemonInfo";
 
 const useStyles = makeStyles((theme) => ({
@@ -121,15 +122,20 @@ export default function Pokedex() {
   return (
     <div>
       <h1>Pokedex</h1>
-      <SearchBar
+      <TextField
         value={searchValue}
-        onChange={(newValue) => setSearchValue(newValue)}
+        onChange={(newValue) => setSearchValue(newValue.target.value)}
         cancelOnEscape
+        fullWidth
+        variant="outlined"
+        className={classes.textField}
         onCancelSearch={() => setSearchValue("")}
-        style={{
-          margin: "16px 0 16px 0",
-          borderRadius: 12,
-          boxShadow: "0 4px 6px 0 rgba(31,70,88,.04)",
+        InputProps={{
+          style: {
+            margin: "16px 0 16px 0",
+            borderRadius: 12,
+            boxShadow: "0 4px 6px 0 rgba(31,70,88,.04)",
+          },
         }}
       />
       {!loading ? (
