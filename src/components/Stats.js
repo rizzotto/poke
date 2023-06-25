@@ -1,42 +1,45 @@
-import { makeStyles } from '@material-ui/core'
-import React, { useState } from 'react'
-import { ProgressBar } from '../../components/ProgressBar'
+import { makeStyles } from "@material-ui/core";
+import React from "react";
+import ProgressBar from "./ProgressBar";
 
+// styles
 const useStyles = makeStyles((theme) => ({
   container: {
-    padding: 20,
-    width: '100%',
+    width: "100%",
+    padding: "20px 20px 140px 20px",
   },
   stats: {
     paddingBottom: 10,
   },
   title: {
     paddingBottom: 8,
-    color: '#4f4f4f',
+    color: "#4f4f4f",
   },
-}))
+}));
 
-function Stats({ data }) {
-  let classes = useStyles()
+export default function Stats({ data }) {
+  let classes = useStyles();
 
-  const [hp] = useState(
+  const [hp] = React.useState(
     data.stats[0].base_stat > 100 ? 100 : data.stats[0].base_stat
-  )
-  const [attack] = useState(
+  );
+  const [attack] = React.useState(
     data.stats[1].base_stat > 100 ? 100 : data.stats[1].base_stat
-  )
-  const [defense] = useState(
+  );
+  const [defense] = React.useState(
     data.stats[2].base_stat > 100 ? 100 : data.stats[2].base_stat
-  )
-  const [spAtk] = useState(
+  );
+  const [spAtk] = React.useState(
     data.stats[3].base_stat > 100 ? 100 : data.stats[3].base_stat
-  )
-  const [spDef] = useState(
+  );
+  const [spDef] = React.useState(
     data.stats[4].base_stat > 100 ? 100 : data.stats[4].base_stat
-  )
-  const [speed] = useState(
+  );
+  const [speed] = React.useState(
     data.stats[5].base_stat > 100 ? 100 : data.stats[5].base_stat
-  )
+  );
+
+  // Just rendering divs, same as I did before
 
   return (
     <div className={classes.container}>
@@ -65,7 +68,5 @@ function Stats({ data }) {
         <ProgressBar percent={speed} />
       </div>
     </div>
-  )
+  );
 }
-
-export default Stats
