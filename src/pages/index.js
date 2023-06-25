@@ -127,6 +127,7 @@ export default function Pokedex() {
         onChange={(newValue) => setSearchValue(newValue.target.value)}
         cancelOnEscape
         fullWidth
+        label="Search a Pokemon"
         variant="outlined"
         className={classes.textField}
         onCancelSearch={() => setSearchValue("")}
